@@ -5,11 +5,11 @@ public class Board {
     private final int BOARD_HEIGHT = 15;
 
     private Player[][] board;
-    private int[][] score;
+    private int[][][] score;
 
     public Board() {
         board = new Player[BOARD_WIDTH][BOARD_HEIGHT];
-        score = new int[BOARD_WIDTH][BOARD_HEIGHT];
+        score = new int[BOARD_WIDTH][BOARD_HEIGHT][2];
     }
 
     public boolean setPlayer(int x, int y, Player player) {
@@ -30,19 +30,26 @@ public class Board {
         return board[x][y];
     }
 
-    public int getScore(int x, int y) {
-        if  (x < 0 || y < 0 || x >= board.length || y >= board[0].length) {
+
+
+
+
+    public int getScore(int x, int y, int level ) {
+        if  (x < 0 || y < 0 || x >= board.length || y >= board[0].length || level < 0 || level > 1) {
             throw new IllegalArgumentException();
         }
-        return score[x][y];
+        return score[x][y][level];
     }
 
-    public void setScore(int x, int y, int score) {
-        if  (x < 0 || y < 0 || x >= board.length || y >= board[0].length) {
+    public void setScore(int x, int y, int level, int score) {
+        if  (x < 0 || y < 0 || x >= board.length || y >= board[0].length || level < 0 || level > 1) {
             throw new IllegalArgumentException();
         }
-        this.score[x][y] = score;
+        this.score[x][y][level] = score;
     }
+
+
+
 
     public int getBOARD_WIDTH() {
         return BOARD_WIDTH;

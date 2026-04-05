@@ -12,40 +12,40 @@ public class Score {
     Board board;
     ScoreWeights scoreWeights;
 
+
     public Score(Board board, ScoreWeights scoreWeights) {
         this.board = board;
         this.scoreWeights = scoreWeights;
     }
 
+    public int getScore(int x, int y, Player player) {
+        if (x < 0 || y < 0 || x >= board.getBOARD_WIDTH() || y >= board.getBOARD_HEIGHT()) {
+            throw new IllegalArgumentException();
+        }
+        return board.getScore(x, y, player == Player.BLACK ? 0 : 1);
+    }
 
-    public int getScore(int x, int y, Player player ) {
+    public int calculatePointScore(int x, int y, Player player) {
         if (x < 0 || y < 0 || x >= board.getBOARD_WIDTH() || y >= board.getBOARD_HEIGHT()) {
             throw new IllegalArgumentException();
         }
 
-// если клетка занята - то там счет 0
         if (board.getPlayer(x, y) != null) return 0;
 
 // Есть 8 потоков от заданной точки (4 направления) по 2 координаты x, y
-// тут координаты.
 // 0, 1 - горизонтальный поток, 2, 3 - вертикальный, 4, 5 - диагональ \, 6, 7 - диагональ /
         int[][] scores = new int[8][2];
-// закрыт ли конец этого потока или нет true - закрыт, false - открыт, null - еще работает поток
         Boolean[] isClosed = new Boolean[8];
-// сколько насчитали своих фигур
         int[] score = new int[8];
 // сколько потоков закрылось, 0 - все в работе, 8 - все отработали
         int finishedFlow = 0;
 
-// стартовые позиции все в одной точке
         for  (int i = 0; i < 8; i++) {
             scores[i][X_POSITION] = x;
             scores[i][Y_POSITION] = y;
         }
 
-// пройти по всем направлениям и посчитать сколько есть своих клеток пока не упремся или в пустую, или в чужую
         while (finishedFlow < 8) {
-
             for (int i = 0; i < 8; i++) {
                 if (isClosed[i] != null) continue;
 
@@ -66,7 +66,6 @@ public class Score {
                 scores[i][X_POSITION] += deltaX;
                 scores[i][Y_POSITION] += deltaY;
 
-// если уперлись в край поля, то все закрыт поток
                 if (scores[i][X_POSITION] < 0 ||
                         scores[i][Y_POSITION] < 0 ||
                         scores[i][X_POSITION] >= board.getBOARD_WIDTH() ||
@@ -78,11 +77,9 @@ public class Score {
 
                 Player currentPlayer = board.getPlayer(scores[i][X_POSITION], scores[i][Y_POSITION]);
                 if (currentPlayer == null) {
- // если попали на пустую клетку - то поток не закрыт
                     isClosed[i] = false;
                     finishedFlow++;
                 } else if (currentPlayer != player) {
-// если в клетке другой игрок - то поток закрыт
                     isClosed[i] = true;
                     finishedFlow++;
                 } else {
@@ -90,13 +87,10 @@ public class Score {
                 }
             }
         }
-// сколько будет наших с цчетом того, что мы сюда поставим нашего
         int finalScore = 0;
 
         for (int i = 0; i < 4; i++) {
             int intScore = 0;
-
-// сколько насчитали своих
             int summScore = score[i*2] + score[i*2 + 1] +1;
 
             if (summScore >= 5) {
@@ -104,7 +98,6 @@ public class Score {
             }
 
             for (var combination = 4; combination > 0; combination--) {
-
                 if (summScore == combination) {
                     if (!isClosed[i * 2] && !isClosed[i * 2 + 1]) {
                             switch (combination) {
@@ -130,17 +123,27 @@ public class Score {
                 }
             }
 
-
             if (finalScore < intScore) {
                 finalScore = intScore;
 
             }
 
         }
-
         return finalScore;
     }
 
+    public void calculateBoard(Player player) {
+        Player enemy = player == Player.BLACK ? Player.WHITE : Player.BLACK;
 
-
+        for (int x = 0; x < board.getBOARD_WIDTH(); x++) {
+            for (int y = 0; y < board.getBOARD_HEIGHT(); y++) {
+                if (board.getPlayer(x, y) == null) {
+                    int attackScore = calculatePointScore(x, y, player);
+                    int defenseScore = calculatePointScore(x, y, enemy);
+                    board.setScore(x, y, 0, attackScore);
+                    board.setScore(x, y, 1, defenseScore);
+                }
+            }
+        }
+    }
 }

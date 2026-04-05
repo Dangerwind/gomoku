@@ -61,7 +61,7 @@ public class ConsoleUI {
     };
 
     private void clearDisplay() {
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 2; i++) {
             System.out.println();
         }
     }
@@ -116,7 +116,11 @@ public class ConsoleUI {
                         if (player == Player.ENEMY) {
                             System.out.print("\u001B[38;2;0;0;255m" + "   ○    " + RESET); // ○
                         } else {
-                            System.out.print("\u001B[38;2;128;128;128m" + "   ▓     " + RESET); // бордюр
+                            if (player == Player.FINISHED) {
+                                System.out.print("\u001B[38;2;128;128;128m" + "   ╳     " + RESET); // бордюр
+                            } else {
+                                System.out.print("\u001B[38;2;128;128;128m" + "   ▓     " + RESET); // неизвестно
+                            }
                         }
                     }
                 }

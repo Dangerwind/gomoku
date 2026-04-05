@@ -3,6 +3,7 @@ package org.dangerwind;
 public enum Player {
     PLAYER,
     ENEMY,
-    WALL
+    FINISHED, // клетки поля которые сгорели
+    WALL    // стела или препятствие
 
 }

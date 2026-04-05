@@ -38,8 +38,6 @@ public class Main {
         scoreWeightsDefense.set(ScorePatternType.CLOSED, 0);
 
 
-        Player current = Player.PLAYER;
-
         Score score = new Score(board, scoreWeightsAtack, scoreWeightsDefense);
 
         while(true) {
@@ -48,25 +46,38 @@ public class Main {
 // спрашивает игрока о его ходе, игрок пишет его ход
             int[] turn;
             do {
-                turn = ui.getUserXY(current);
+                turn = ui.getUserXY(Player.PLAYER);
                 if (board.getPlayer(turn[0] - 1, turn[1] - 1) != null) {
                     System.out.println("Поле уже занято, выберите другое");
                 }
             }
             while(board.getPlayer(turn[0] - 1, turn[1] - 1) != null);
+            System.out.println("Ваш ход X=" + turn[0] + " Y=" + turn[1] + " score=" + board.getScore(turn[0] - 1, turn[1] - 1, 1));
+
+
+            if (board.getScore(turn[0] - 1, turn[1] - 1, 1) >= scoreWeightsDefense.get(ScorePatternType.FIVE)) {
+                ui.displayBoard(board, scoreWeightsAtack,  scoreWeightsDefense);
+                System.out.println("Вы победили!");
+                break;
+            }
 
 // ставится фишка игрока на поле
-            board.setPlayer(turn[0] - 1, turn[1] - 1, current);
+            board.setPlayer(turn[0] - 1, turn[1] - 1, Player.PLAYER);
 // рассчитываются коэффициенты каждого хода
-            score.calculateBoard(current);
+            score.calculateBoard(Player.PLAYER);
 
 // компьютер рассчитывает куда ему пойти
             int[] enemyTurn = score.calculatBestTurn();
 // ставит свою фишку
             board.setPlayer(enemyTurn[0], enemyTurn[1], Player.ENEMY);
-            System.out.println("Мой ход X=" + (enemyTurn[0]+1) + " Y=" + (enemyTurn[1]+1));
+            System.out.println("Мой ход X=" + (enemyTurn[0]+1) + " Y=" + (enemyTurn[1]+1) + " score=" + board.getScore(enemyTurn[0], enemyTurn[1], 0));
+            if (board.getScore(enemyTurn[0], enemyTurn[1], 0) >= scoreWeightsAtack.get(ScorePatternType.FIVE)) {
+                ui.displayBoard(board, scoreWeightsAtack,  scoreWeightsDefense);
+                System.out.println("Вы проиграли!");
+                break;
+            }
 // пересчет поля и коэффициентов
-            score.calculateBoard(current);
+            score.calculateBoard(Player.PLAYER);
         }
 
 

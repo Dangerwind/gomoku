@@ -32,8 +32,6 @@ public class Board {
 
 
 
-
-
     public int getScore(int x, int y, int level ) {
         if  (x < 0 || y < 0 || x >= board.length || y >= board[0].length || level < 0 || level > 1) {
             throw new IllegalArgumentException();

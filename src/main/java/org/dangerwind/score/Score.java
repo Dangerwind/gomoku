@@ -97,6 +97,8 @@ public class Score {
             int intScore = 0;
             int summScore = score[i*2] + score[i*2 + 1] +1;
 
+
+
             if (summScore >= 5) {
                intScore = scoreWeights.get(ScorePatternType.FIVE);
             }

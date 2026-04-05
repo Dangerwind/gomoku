@@ -23,3 +23,7 @@ tasks.test {
 application {
     mainClass.set("org.dangerwind.Main")
 }
+
+tasks.named<JavaExec>("run") {
+    standardInput = System.`in`
+}

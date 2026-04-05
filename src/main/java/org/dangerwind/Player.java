@@ -1,8 +1,8 @@
 package org.dangerwind;
 
 public enum Player {
-    BLACK,
-    WHITE,
+    PLAYER,
+    ENEMY,
     WALL
 
 }

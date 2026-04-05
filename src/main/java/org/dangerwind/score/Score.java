@@ -4,28 +4,32 @@ import org.dangerwind.Board;
 import org.dangerwind.Player;
 import org.dangerwind.score.ScoreWeights;
 
+import java.util.HashMap;
+
 public class Score {
 
     private static final int X_POSITION = 0;
     private static final int Y_POSITION = 1;
 
     Board board;
-    ScoreWeights scoreWeights;
+    ScoreWeights scoreWeightsAtack;
+    ScoreWeights scoreWeightsDefense;
 
 
-    public Score(Board board, ScoreWeights scoreWeights) {
+    public Score(Board board, ScoreWeights scoreWeightsAtack,  ScoreWeights scoreWeightsDefense) {
         this.board = board;
-        this.scoreWeights = scoreWeights;
+        this.scoreWeightsAtack = scoreWeightsAtack;
+        this.scoreWeightsDefense = scoreWeightsDefense;
     }
 
     public int getScore(int x, int y, Player player) {
         if (x < 0 || y < 0 || x >= board.getBOARD_WIDTH() || y >= board.getBOARD_HEIGHT()) {
             throw new IllegalArgumentException();
         }
-        return board.getScore(x, y, player == Player.BLACK ? 0 : 1);
+        return board.getScore(x, y, player == Player.PLAYER ? 0 : 1);
     }
 
-    public int calculatePointScore(int x, int y, Player player) {
+    public int calculatePointScore(int x, int y, Player player, ScoreWeights scoreWeights) {
         if (x < 0 || y < 0 || x >= board.getBOARD_WIDTH() || y >= board.getBOARD_HEIGHT()) {
             throw new IllegalArgumentException();
         }
@@ -133,17 +137,47 @@ public class Score {
     }
 
     public void calculateBoard(Player player) {
-        Player enemy = player == Player.BLACK ? Player.WHITE : Player.BLACK;
+        Player enemy = player == Player.PLAYER ? Player.ENEMY : Player.PLAYER;
 
         for (int x = 0; x < board.getBOARD_WIDTH(); x++) {
             for (int y = 0; y < board.getBOARD_HEIGHT(); y++) {
                 if (board.getPlayer(x, y) == null) {
-                    int attackScore = calculatePointScore(x, y, player);
-                    int defenseScore = calculatePointScore(x, y, enemy);
+                    int attackScore = calculatePointScore(x, y, enemy, scoreWeightsAtack);
+                    int defenseScore = calculatePointScore(x, y, player, scoreWeightsDefense);
                     board.setScore(x, y, 0, attackScore);
                     board.setScore(x, y, 1, defenseScore);
                 }
             }
         }
     }
+
+    public int[] calculatBestTurn() {
+        int maxX = -1;
+        int maxY = -1;
+        int maxScore = -1;
+
+        for(var i = 0; i < board.getBOARD_WIDTH(); i++) {
+            for(var j = 0; j < board.getBOARD_HEIGHT(); j++) {
+                if (board.getPlayer(i, j) != null) {
+                    continue;
+                }
+
+                int scr01 = board.getScore(i, j, 0);
+                int scr02 = board.getScore(i, j, 1);
+                scr01 = Math.max(scr01, scr02);
+
+                if (maxScore < scr01) {
+                    maxX = i;
+                    maxY = j;
+                    maxScore = scr01;
+                }
+
+            }
+        }
+        return new int[]{maxX, maxY};
+    }
+
+
+
+
 }

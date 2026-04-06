@@ -70,18 +70,26 @@ public class ConsoleUI {
 
         clearDisplay();
 
-        System.out.println("");
-
-        System.out.print("  ┌");
+        System.out.print("   ");
         for (int i = 0; i < board.getBOARD_WIDTH(); i++) {
             if ((i + 1)/10 == 0) System.out.print(" ");
-            System.out.print("  ");
-            System.out.print(i + 1);
-            if (i < board.getBOARD_WIDTH() - 1 ) System.out.print("   ┬");
+            else System.out.print((i + 1)/10);
+            System.out.print(" ");
         }
+        System.out.println("");
+        System.out.print("   ");
+        for (int i = 0; i < board.getBOARD_WIDTH(); i++) {
+            System.out.print((i + 1)%10);
+            System.out.print(" ");
+        }
+        System.out.println("");
+        System.out.print("   ");
+        for (int i = 0; i < board.getBOARD_WIDTH(); i++) {
+            System.out.print("┬─");
 
+        }
+        System.out.println("");
 
-        System.out.println("   ┐");
 
 
         for (int y = 0; y < board.getBOARD_HEIGHT(); y++) {
@@ -107,19 +115,19 @@ public class ConsoleUI {
                     if  (score == scoreWeightsAtack.get(ScorePatternType.TWO_SEMI_OPEN)) color = 2;
                     if  (score == scoreWeightsAtack.get(ScorePatternType.ONE_OPEN)) color = 1;
 
-                    System.out.print(COLORS[color] + String.format("%07d", score) + " " + RESET);
+                    System.out.print(COLORS[color] +"·" + " " + RESET);
 
                 } else {
                     if (player == Player.PLAYER) {
-                        System.out.print("\u001B[38;2;255;0;0m" + "   ●    " + RESET);
+                        System.out.print("\u001B[38;2;255;0;0m" + "● " + RESET);
                     } else {
                         if (player == Player.ENEMY) {
-                            System.out.print("\u001B[38;2;0;0;255m" + "   ○    " + RESET); // ○
+                            System.out.print("\u001B[38;2;0;0;255m" + "● " + RESET); // ○
                         } else {
                             if (player == Player.FINISHED) {
-                                System.out.print("\u001B[38;2;128;128;128m" + "   ╳     " + RESET); // бордюр
+                                System.out.print("\u001B[38;2;128;128;128m" + "╳ " + RESET); // бордюр
                             } else {
-                                System.out.print("\u001B[38;2;128;128;128m" + "   ▓     " + RESET); // неизвестно
+                                System.out.print("\u001B[38;2;128;128;128m" + "▓ " + RESET); // неизвестно
                             }
                         }
                     }
@@ -127,37 +135,6 @@ public class ConsoleUI {
             }
             System.out.println("");
 
-            for (int x = 0; x < board.getBOARD_WIDTH(); x++) {
-
-                if (x == 0) {
-                    System.out.print("  │");
-                }
-
-                Player player = board.getPlayer(x, y);
-                if (player == null) {
-                    int score = board.getScore(x, y, 1);
-                    int color = 0;
-
-                    if  (score == scoreWeightsDefense.get(ScorePatternType.FIVE)) color = 8;
-                    if  (score == scoreWeightsDefense.get(ScorePatternType.FOUR_OPEN)) color = 7;
-                    if  (score == scoreWeightsDefense.get(ScorePatternType.FOUR_SEMI_OPEN)) color = 6;
-                    if  (score == scoreWeightsDefense.get(ScorePatternType.THREE_OPEN)) color = 5;
-                    if  (score == scoreWeightsDefense.get(ScorePatternType.THREE_SEMI_OPEN)) color = 4;
-                    if  (score == scoreWeightsDefense.get(ScorePatternType.TWO_OPEN)) color = 3;
-                    if  (score == scoreWeightsDefense.get(ScorePatternType.TWO_SEMI_OPEN)) color = 2;
-                    if  (score == scoreWeightsDefense.get(ScorePatternType.ONE_OPEN)) color = 1;
-
-                    System.out.print(COLORS[color] + String.format("%07d", score) + " " + RESET);
-
-                } else if (player == Player.PLAYER) {
-                    System.out.print("\u001B[38;2;255;0;0m" + "   ^    " + RESET);
-                } else {
-                    System.out.print("\u001B[38;2;0;0;255m" + "   ^    " + RESET); // ○
-                }
-            }
-
-
-            System.out.println();
         }
 
 

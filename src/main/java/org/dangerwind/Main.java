@@ -40,6 +40,12 @@ public class Main {
 
         Score score = new Score(board, scoreWeightsAtack, scoreWeightsDefense);
 
+
+        // просто для отладки поставил несколько камней на поле куда нельзя ставить фигуры
+        // board.setPlayer(8, 9, Player.WALL);
+       // board.setPlayer(8, 10, Player.WALL);
+       // board.setPlayer(9, 9, Player.WALL);
+
         while(true) {
 // рисует игровое поле
             ui.displayBoard(board, scoreWeightsAtack,  scoreWeightsDefense);
